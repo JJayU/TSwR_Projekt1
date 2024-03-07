@@ -27,7 +27,7 @@ def simulate_pybullet(trajectory_generator, controller, timesteps, multimodel):
 
         q_d, q_d_dot, q_d_ddot = trajectory_generator.generate(t)
         control = controller.calculate_control(x, q_d, q_d_dot, q_d_ddot)
-
+        
         Q_d.append(np.concatenate([q_d, q_d_dot]))
         ctrl.append(control)
         manipulator.set_control(control)
