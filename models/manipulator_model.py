@@ -16,15 +16,22 @@ class ManiuplatorModel:
         self.I_1 = 1 / 12 * self.m1 * (3 * self.r1 ** 2 + self.l1 ** 2)
         self.I_2 = 1 / 12 * self.m2 * (3 * self.r2 ** 2 + self.l2 ** 2)
         
-        self.m3 = 0.0
+        self.m3 = 3.0
         self.r3 = 0.01
         self.I_3 = 2. / 5 * self.m3 * self.r3 ** 2
         
         self.d1 = self.l1 / 2
         self.d2 = self.l2 / 2
-        self.alpha = self.m1 * pow(self.d1, 2) + self.I_1 + self.m2 * (pow(self.d2, 2) + pow(self.d2, 2)) + self.I_2
-        self.beta = self.m2 * self.l1 * self.d2
-        self.gamma = self.m2 * pow(self.d2, 2) + self.I_2
+        
+        # Dla modelu bez masy m3
+        # self.alpha = self.m1 * pow(self.d1, 2) + self.I_1 + self.m2 * (pow(self.d2, 2) + pow(self.d2, 2)) + self.I_2
+        # self.beta = self.m2 * self.l1 * self.d2
+        # self.gamma = self.m2 * pow(self.d2, 2) + self.I_2
+        
+        #
+        self.alpha = self.m1 * pow(self.d1, 2) + self.I_1 + self.m2 * (pow(self.d2, 2) + pow(self.d2, 2)) + self.I_2 + self.m3 * (pow(self.l1, 2) + pow(self.l2, 2)) + self.I_3
+        self.beta = self.m2 * self.l1 * self.d2 + self.m3 * self.l1 * self.l2
+        self.gamma = self.m2 * pow(self.d2, 2) + self.I_2 + self.m3 * pow(self.l2, 2) + self.I_3
 
     def M(self, x):
         """

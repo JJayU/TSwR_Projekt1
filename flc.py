@@ -36,7 +36,7 @@ with respect to time 'T' to analyze what is going on in the system
 plt.subplot(221)
 plt.plot(T, Q[:, 0], 'r')
 plt.plot(T, Q_d[:, 0], 'b')
-# plt.ylim(-1, 1)
+plt.ylim(-1, 1)
 plt.subplot(222)
 plt.plot(T, Q[:, 1], 'r')
 plt.plot(T, Q_d[:, 1], 'b')
