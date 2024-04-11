@@ -10,8 +10,8 @@ from trajectory_generators.poly3 import Poly3
 from utils.simulation import simulate
 
 Tp = 0.01
-start = 0
-end = 3
+start = 0.0
+end = 5.0
 """
 Switch to FeedbackLinearizationController as soon as you implement it
 """

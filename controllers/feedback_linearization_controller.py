@@ -18,10 +18,10 @@ class FeedbackLinearizationController(Controller):
         q1, q2, q1_dot, q2_dot = x
         
         # Bez sprzezenia zwrotnego
-        # tau = self.model.M(x) @ q_r_ddot + self.model.C(x) @ q_r_dot
+        # tau = self.model.M(x) @ q_r_ddot + self.model.C(x) @ x[2:]
         
         # Ze sprzezeniem zwrotnym
-        v = q_r_ddot + self.Kd * (q_r_dot - np.array([q1_dot, q2_dot])) + self.Kp * (q_r - np.array([q1, q2]))
-        tau = self.model.M(x) @ v + self.model.C(x) @ q_r_dot
+        v = q_r_ddot + self.Kd * (q_r_dot - x[2:]) + self.Kp * (q_r - x[:2])
+        tau = self.model.M(x) @ v + self.model.C(x) @ x[2:]
         
         return tau
