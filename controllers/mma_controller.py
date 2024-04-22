@@ -13,30 +13,24 @@ class MMAController(Controller):
         # III: m3=1.0,  r3=0.3
         self.models = [ManiuplatorModel1(Tp), ManiuplatorModel2(Tp), ManiuplatorModel3(Tp)]
         self.i = 0
-        self.Kd = 100
+        self.Kd = 50
         self.Kp = 10
-        self.v_prev = [0, 0]
+        self.u_prev = [0, 0]
 
     def choose_model(self, x):
         # TODO: Implement procedure of choosing the best fitting model from self.models (by setting self.i)
         # q1, q2, q1_dot, q2_dot = x
 
-        e_m1 = x[2:] - self.models[0].M(x) @ self.v_prev + self.models[0].C(x) @ x[2:]
-        e_m2 = x[2:] - self.models[1].M(x) @ self.v_prev + self.models[1].C(x) @ x[2:]
-        e_m3 = x[2:] - self.models[2].M(x) @ self.v_prev + self.models[2].C(x) @ x[2:]
+        e_m1 = x[:2] - np.linalg.inv(self.models[0].M(x)) @ self.u_prev + self.models[0].C(x) @ x[2:]
+        e_m2 = x[:2] - np.linalg.inv(self.models[1].M(x)) @ self.u_prev + self.models[1].C(x) @ x[2:]
+        e_m3 = x[:2] - np.linalg.inv(self.models[2].M(x)) @ self.u_prev + self.models[2].C(x) @ x[2:]
 
-        prev_err = 999999999
-        if prev_err > np.abs(e_m1[0]) + np.abs(e_m1[1]):
-            prev_err = np.abs(e_m1[0]) + np.abs(e_m1[1])
-            self.i = 0
-        if prev_err > np.abs(e_m2[0]) + np.abs(e_m2[1]):
-            prev_err = np.abs(e_m2[0]) + np.abs(e_m2[1])
-            self.i = 1
-        if prev_err > np.abs(e_m3[0]) + np.abs(e_m3[1]):
-            prev_err = np.abs(e_m2[0]) + np.abs(e_m2[1])
-            self.i = 2
+        errors = [np.abs(e_m1[0]) + np.abs(e_m1[1]), np.abs(e_m2[0]) + np.abs(e_m2[1]),
+                  np.abs(e_m3[0]) + np.abs(e_m3[1])]
+        self.i = np.argmin(errors)
 
         print("Choosen: " + str(self.i))
+
 
     def calculate_control(self, x, q_r, q_r_dot, q_r_ddot):
         self.choose_model(x)
@@ -48,6 +42,7 @@ class MMAController(Controller):
         M = self.models[self.i].M(x)
         C = self.models[self.i].C(x)
         u = M @ v + C @ q_dot
-        self.v_prev = v
+
+        self.u_prev = u
 
         return u
