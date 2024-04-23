@@ -7,32 +7,43 @@ from models.mmac_model3 import ManiuplatorModel3
 
 class MMAController(Controller):
     def __init__(self, Tp):
-        # TODO: Fill the list self.models with 3 models of 2DOF manipulators with different m3 and r3
         # I:   m3=0.1,  r3=0.05
         # II:  m3=0.01, r3=0.01
         # III: m3=1.0,  r3=0.3
         self.models = [ManiuplatorModel1(Tp), ManiuplatorModel2(Tp), ManiuplatorModel3(Tp)]
         self.i = 0
-        self.Kd = 50
-        self.Kp = 10
+        self.Kd = 3
+        self.Kp = 3
         self.u_prev = [0, 0]
+        self.x_prev = [0, 0, 0, 0]
+        self.first = True
+        self.Tp = Tp
 
     def choose_model(self, x):
-        # TODO: Implement procedure of choosing the best fitting model from self.models (by setting self.i)
         # q1, q2, q1_dot, q2_dot = x
 
-        e_m1 = x[:2] - np.linalg.inv(self.models[0].M(x)) @ self.u_prev + self.models[0].C(x) @ x[2:]
-        e_m2 = x[:2] - np.linalg.inv(self.models[1].M(x)) @ self.u_prev + self.models[1].C(x) @ x[2:]
-        e_m3 = x[:2] - np.linalg.inv(self.models[2].M(x)) @ self.u_prev + self.models[2].C(x) @ x[2:]
+        biggest_error = 99999
 
-        errors = [np.abs(e_m1[0]) + np.abs(e_m1[1]), np.abs(e_m2[0]) + np.abs(e_m2[1]),
-                  np.abs(e_m3[0]) + np.abs(e_m3[1])]
-        self.i = np.argmin(errors)
+        for i in range(0, 3):
+            q_ddot = np.linalg.solve(self.models[i].M(self.x_prev), self.u_prev - np.dot(self.models[i].C(self.x_prev), self.x_prev[2:]))
+            q_dot = self.x_prev[2:] + q_ddot * self.Tp
+            q = x[:2] + q_dot * self.Tp
+
+            x_est = np.concatenate([q, q_dot], axis=0)
+
+            err = abs(x_est[0] - x[0]) + abs(x_est[1] - x[1]) + abs(x_est[2] - x[2]) + abs(x_est[3] - x[3])
+
+            if err < biggest_error:
+                biggest_error = err
+                self.i = i
 
         print("Choosen: " + str(self.i))
 
-
     def calculate_control(self, x, q_r, q_r_dot, q_r_ddot):
+        if self.first:
+            self.first = False
+            self.x_prev = x
+
         self.choose_model(x)
 
         q = x[:2]
@@ -44,5 +55,6 @@ class MMAController(Controller):
         u = M @ v + C @ q_dot
 
         self.u_prev = u
+        self.x_prev = x
 
         return u

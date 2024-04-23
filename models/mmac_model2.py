@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class ManiuplatorModel2:
     def __init__(self, Tp):
         self.Tp = Tp
