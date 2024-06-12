@@ -16,7 +16,7 @@ class ManiuplatorModel:
         self.I_1 = 1.0 / 12 * self.m1 * (3.0 * self.r1 ** 2 + self.l1 ** 2)
         self.I_2 = 1.0 / 12 * self.m2 * (3.0 * self.r2 ** 2 + self.l2 ** 2)
         
-        self.m3 = 0.5
+        self.m3 = 0.1
         self.r3 = 0.05
         self.I_3 = 2. / 5 * self.m3 * self.r3 ** 2
         

@@ -10,11 +10,12 @@ class ADRCJointController(Controller):
         self.kp = kp
         self.kd = kd
 
-        A = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]])
-        B = np.array([[0], [self.b], [0]])
-        L = np.array([[6 * p], [20 * p ** 2], [6 * p ** 3]])
-        W = np.array([[1, 0, 0]])
-        self.eso = ESO(A, B, W, L, q0, Tp)
+        self.A = np.array([[0, 1, 0], [0, 0, 1], [0, 0, 0]])
+        self.B = np.array([[0], [self.b], [0]])
+        self.L = np.array([[6 * p], [20 * p ** 2], [6 * p ** 3]])
+        self.W = np.array([[1, 0, 0]])
+
+        self.eso = ESO(self.A, self.B, self.W, self.L, q0, Tp)
         self.u_prev = 0
         self.model = ManiuplatorModel(Tp)
 

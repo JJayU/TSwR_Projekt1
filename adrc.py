@@ -11,7 +11,7 @@ from trajectory_generators.poly3 import Poly3
 from utils.simulation import simulate
 
 Tp = 0.001
-end = 2
+end = 5
 
 # traj_gen = ConstantTorque(np.array([0., 1.0])[:, np.newaxis])
 traj_gen = Sinusoidal(np.array([0., 1.]), np.array([2., 2.]), np.array([0., 0.]))
